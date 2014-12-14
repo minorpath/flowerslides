@@ -30,14 +30,63 @@ namespace FlowerSlides
         Color greyText = Color.FromArgb(165, 165, 165);
         Color lightText = Color.FromArgb(214, 214, 214);
 
+        // BlendPanel
+        private float mBlend;
+        private int mDir = 1;
+        public int count = 0;
+        public Bitmap[] pictures;
+
+        public void myPhoto()
+        {
+            pictures = new Bitmap[9];
+            pictures[0] = new Bitmap(@"C:\Users\hma\Pictures\Blomster\PenstemonPenshamCzar.jpg");
+            pictures[1] = new Bitmap(@"C:\Users\hma\Pictures\Blomster\Penstemon-001.jpg");
+            pictures[2] = new Bitmap(@"C:\Users\hma\Pictures\Blomster\4259-penstemon-fasciculatus.jpg");
+            pictures[3] = new Bitmap(@"C:\Users\hma\Pictures\Blomster\Penstemon_campanulatus-CR.jpg");
+
+            timer1.Interval = 50; //time of transition
+            timer1.Tick += BlendTick;
+            try
+            {
+                blendPanel1.Image1 = pictures[count];
+                blendPanel1.Image2 = pictures[++count];
+            }
+            catch
+            {
+
+            }
+            timer1.Enabled = true;
+        }
+        private void BlendTick(object sender, EventArgs e)
+        {
+            mBlend += mDir * 0.04F;
+            if (mBlend > 1)
+            {
+                mBlend = 0.0F;
+                if ((count + 1) < pictures.Length)
+                {
+                    blendPanel1.Image1 = pictures[count];
+                    blendPanel1.Image2 = pictures[++count];
+                }
+                else
+                {
+                    blendPanel1.Image1 = pictures[count];
+                    blendPanel1.Image2 = pictures[0];
+                    count = 0;
+                }
+            }
+            blendPanel1.Blend = mBlend;
+        }
         public Form1()
         {
             InitializeComponent();
 
+            this.pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             this.BackColor = dark;
             this.pictureTitle.Visible = false;
             this.pictureTitle.Top = 40;
             this.pictureTitle.ForeColor = lightText;
+            myPhoto();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -128,7 +177,6 @@ namespace FlowerSlides
         private void ShowPicture(string filename)
         {
             var image = Image.FromFile(filename);
-            this.pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             this.pictureBox1.Bounds = this.Bounds;
             this.pictureBox1.Height -= 80;
             this.pictureBox1.Top = 80;
