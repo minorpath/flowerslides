@@ -33,6 +33,7 @@
             this.pictureTitle = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.blendPanel1 = new BlendPanel();
+            this.thumbsPanel1 = new FlowerSlides.ThumbsPanel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -66,12 +67,21 @@
             this.blendPanel1.Size = new System.Drawing.Size(529, 422);
             this.blendPanel1.TabIndex = 2;
             // 
+            // thumbsPanel1
+            // 
+            this.thumbsPanel1.CurrentFolder = null;
+            this.thumbsPanel1.Location = new System.Drawing.Point(203, 40);
+            this.thumbsPanel1.Name = "thumbsPanel1";
+            this.thumbsPanel1.Size = new System.Drawing.Size(335, 244);
+            this.thumbsPanel1.TabIndex = 0;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.ClientSize = new System.Drawing.Size(553, 509);
+            this.Controls.Add(this.thumbsPanel1);
             this.Controls.Add(this.blendPanel1);
             this.Controls.Add(this.pictureTitle);
             this.Controls.Add(this.pictureBox1);
@@ -93,6 +103,7 @@
         private System.Windows.Forms.Label pictureTitle;
         private BlendPanel blendPanel1;
         private System.Windows.Forms.Timer timer1;
+        private ThumbsPanel thumbsPanel1;
 
     }
 }

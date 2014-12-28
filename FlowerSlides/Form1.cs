@@ -53,6 +53,7 @@ namespace FlowerSlides
             }
             catch
             {
+            thumbsPanel1.CurrentFolder = @"C:\Users\hma\Pictures\Blomster";
 
             }
             timer1.Enabled = true;
