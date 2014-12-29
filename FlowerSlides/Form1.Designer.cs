@@ -29,21 +29,11 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureTitle = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.blendPanel1 = new BlendPanel();
             this.thumbsPanel1 = new FlowerSlides.ThumbsPanel();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.blendPanel1 = new BlendPanel();
             this.SuspendLayout();
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Location = new System.Drawing.Point(12, 48);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(100, 50);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
             // 
             // pictureTitle
             // 
@@ -55,43 +45,46 @@
             this.pictureTitle.TabIndex = 1;
             this.pictureTitle.Text = "pictureTitle";
             // 
+            // thumbsPanel1
+            // 
+            this.thumbsPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.thumbsPanel1.CurrentFolder = null;
+            this.thumbsPanel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(96)))), ((int)(((byte)(96)))), ((int)(((byte)(96)))));
+            this.thumbsPanel1.Location = new System.Drawing.Point(12, 12);
+            this.thumbsPanel1.Name = "thumbsPanel1";
+            this.thumbsPanel1.Size = new System.Drawing.Size(923, 546);
+            this.thumbsPanel1.TabIndex = 0;
+            // 
             // blendPanel1
             // 
-            this.blendPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.blendPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.blendPanel1.Blend = 0F;
             this.blendPanel1.Image1 = null;
             this.blendPanel1.Image2 = null;
-            this.blendPanel1.Location = new System.Drawing.Point(12, 75);
+            this.blendPanel1.Location = new System.Drawing.Point(12, 9);
             this.blendPanel1.Name = "blendPanel1";
-            this.blendPanel1.Size = new System.Drawing.Size(529, 422);
+            this.blendPanel1.Size = new System.Drawing.Size(923, 549);
+            this.blendPanel1.SizeMode = BlendPanelSizeMode.Zoom;
             this.blendPanel1.TabIndex = 2;
-            // 
-            // thumbsPanel1
-            // 
-            this.thumbsPanel1.CurrentFolder = null;
-            this.thumbsPanel1.Location = new System.Drawing.Point(203, 40);
-            this.thumbsPanel1.Name = "thumbsPanel1";
-            this.thumbsPanel1.Size = new System.Drawing.Size(335, 244);
-            this.thumbsPanel1.TabIndex = 0;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.ClientSize = new System.Drawing.Size(553, 509);
+            this.ClientSize = new System.Drawing.Size(947, 570);
             this.Controls.Add(this.thumbsPanel1);
             this.Controls.Add(this.blendPanel1);
             this.Controls.Add(this.pictureTitle);
-            this.Controls.Add(this.pictureBox1);
             this.KeyPreview = true;
             this.Name = "Form1";
             this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -99,7 +92,6 @@
 
         #endregion
 
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label pictureTitle;
         private BlendPanel blendPanel1;
         private System.Windows.Forms.Timer timer1;

@@ -22,77 +22,44 @@ namespace FlowerSlides
         bool _slideshowStarted = false;
         List<string> files;
         int currentIndex = 0;
+        FormWindowState _originalWindowState = FormWindowState.Maximized;
 
-        // Thumbnails 10px mellom hvert i horisontal retning
-
-        // Farge grå tekst
-        Color dark = Color.FromArgb(29, 29, 29);
-        Color greyText = Color.FromArgb(165, 165, 165);
-        Color lightText = Color.FromArgb(214, 214, 214);
-
-        // BlendPanel
-        private float mBlend;
-        private int mDir = 1;
         public int count = 0;
         public Bitmap[] pictures;
 
-        public void myPhoto()
-        {
-            pictures = new Bitmap[9];
-            pictures[0] = new Bitmap(@"C:\Users\hma\Pictures\Blomster\PenstemonPenshamCzar.jpg");
-            pictures[1] = new Bitmap(@"C:\Users\hma\Pictures\Blomster\Penstemon-001.jpg");
-            pictures[2] = new Bitmap(@"C:\Users\hma\Pictures\Blomster\4259-penstemon-fasciculatus.jpg");
-            pictures[3] = new Bitmap(@"C:\Users\hma\Pictures\Blomster\Penstemon_campanulatus-CR.jpg");
-
-            timer1.Interval = 50; //time of transition
-            timer1.Tick += BlendTick;
-            try
-            {
-                blendPanel1.Image1 = pictures[count];
-                blendPanel1.Image2 = pictures[++count];
-            }
-            catch
-            {
-            thumbsPanel1.CurrentFolder = @"C:\Users\hma\Pictures\Blomster";
-
-            }
-            timer1.Enabled = true;
-        }
-        private void BlendTick(object sender, EventArgs e)
-        {
-            mBlend += mDir * 0.04F;
-            if (mBlend > 1)
-            {
-                mBlend = 0.0F;
-                if ((count + 1) < pictures.Length)
-                {
-                    blendPanel1.Image1 = pictures[count];
-                    blendPanel1.Image2 = pictures[++count];
-                }
-                else
-                {
-                    blendPanel1.Image1 = pictures[count];
-                    blendPanel1.Image2 = pictures[0];
-                    count = 0;
-                }
-            }
-            blendPanel1.Blend = mBlend;
-        }
+        SlideshowRunner _slideshow;
+        
         public Form1()
         {
             InitializeComponent();
 
-            this.pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            this.BackColor = dark;
+            this.BackColor = Globals.DarkGray;
             this.pictureTitle.Visible = false;
             this.pictureTitle.Top = 40;
-            this.pictureTitle.ForeColor = lightText;
-            myPhoto();
+            this.pictureTitle.ForeColor = Globals.LightText;
+
+            thumbsPanel1.BackColor = Globals.DarkGray;
+            thumbsPanel1.ImageClicked += thumbsPanel1_ImageClicked;
+            thumbsPanel1.CurrentFolder = @"C:\Users\hma\Pictures\Blomster";
+            thumbsPanel1.Location = new Point(0,0);
+            thumbsPanel1.Size = Size;
+
+            blendPanel1.Location = new Point(0, 0);
+            blendPanel1.Size = Size;
+            blendPanel1.Hide();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        void thumbsPanel1_ImageClicked(object sender, ImageClickedEventArgs e)
         {
-            this.Focus();
+            StartSlideshow(e.Filename);
+        }
+
+        private void StartSlideshow(string filename)
+        {
+            StartFullscreen();
+            thumbsPanel1.Hide();
+            blendPanel1.Show();
+            _slideshow = new SlideshowRunner(filename, blendPanel1);
         }
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
@@ -111,17 +78,14 @@ namespace FlowerSlides
         {
             this.pictureTitle.Visible = false;
             ExitFullscreen();
-            ShowThumbnails();
-        }
-       
-
-        private void ShowThumbnails()
-        {
-//            throw new NotImplementedException();
+            thumbsPanel1.Show();
+            blendPanel1.Hide();
+            _slideshow.Stop();
         }
 
         private void StartFullscreen()
         {
+            _originalWindowState = WindowState;
             FormBorderStyle = FormBorderStyle.None;
             WindowState = FormWindowState.Maximized;
         }
@@ -129,7 +93,7 @@ namespace FlowerSlides
         private void ExitFullscreen()
         {
             FormBorderStyle = FormBorderStyle.Sizable;
-            WindowState = FormWindowState.Normal;
+            WindowState = _originalWindowState;
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -159,30 +123,17 @@ namespace FlowerSlides
 
         private void PreviousPicture()
         {
-            currentIndex--;
-            if (currentIndex == -1)
-                currentIndex = files.Count-1;
-
-            ShowPicture(files[currentIndex]);
+            _slideshow.PreviousPicture();
         }
 
         private void NextPicture()
         {
-            currentIndex++;
-            if (currentIndex == files.Count)
-                currentIndex = 0;
-
-            ShowPicture(files[currentIndex]);
+            _slideshow.NextPicture();
         }
 
         private void ShowPicture(string filename)
         {
             var image = Image.FromFile(filename);
-            this.pictureBox1.Bounds = this.Bounds;
-            this.pictureBox1.Height -= 80;
-            this.pictureBox1.Top = 80;
-            this.pictureBox1.Image = image;
-
             this.pictureTitle.Text = FormatPictureTitle(filename);
             this.pictureTitle.Visible = true;
         }

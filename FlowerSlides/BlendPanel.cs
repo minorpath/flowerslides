@@ -43,8 +43,15 @@ public class BlendPanel : Panel
     }
     protected override void OnPaint(PaintEventArgs e)
     {
-        if (mImg1 == null || mImg2 == null)
+        if (mImg1 == null && mImg2 == null)
+        {
             e.Graphics.FillRectangle(new SolidBrush(this.BackColor), new Rectangle(0, 0, this.Width, this.Height));
+        }
+        else if (mImg2 == null)
+        {
+            var rc1 = ResizedRect(mImg1);
+            e.Graphics.DrawImage(mImg1, rc1, 0, 0, mImg1.Width, mImg1.Height, GraphicsUnit.Pixel);
+        }
         else
         {
             var rc1 = ResizedRect(mImg1);
