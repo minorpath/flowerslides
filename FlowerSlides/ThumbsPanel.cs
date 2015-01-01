@@ -15,44 +15,21 @@ namespace FlowerSlides
     {
         public event EventHandler<ImageClickedEventArgs> ImageClicked;
 
+        FlowLayoutPanel flp;
         private Label FolderLabel;
         private Label DescriptionLabel;
-        private List<Panel> Thumbnails;
-
         private string _currentFolder;
         public ThumbsPanel()
         {
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
             BackColor = Globals.DarkGray;
             ForeColor = Globals.LightGray;
-            Thumbnails = new List<Panel>();
-            Resize += ThumbsPanel_Resize;
-        }
-
-        void ThumbsPanel_Resize(object sender, EventArgs e)
-        {
-            RepositionThumbnails();
-        }
-
-        private void RepositionThumbnails()
-        {
-            int xOffset = 50;
-            int xPosition = xOffset;
-            int yPosition = 140;
-            foreach(Panel pp in Thumbnails)
-            {
-                pp.Location = new Point(xPosition + 10, yPosition);
-
-                // set position of next PictureBox 10 pixels to the right of the previous
-                xPosition += pp.Width + 4;
-
-                // Wrap thumbnails
-                if (xPosition > (this.Width - (xOffset + pp.Width)))
-                {
-                    xPosition = xOffset;
-                    yPosition += 120 + 10;
-                }
-            }
+            flp = new FlowLayoutPanel();
+            flp.Parent = this;
+            flp.Location = new Point(50, 140);
+            flp.Size = new Size(this.Width - 100, this.Height - 190);
+            flp.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
+            flp.AutoScroll = true;
         }
 
         public void Initialize()
@@ -141,7 +118,7 @@ namespace FlowerSlides
 
                 Panel pp = new Panel();
                 pp.BackColor = this.BackColor;
-                pp.Parent = p;
+                pp.Parent = flp;
                 pp.Location = new Point(xPosition + 10, yPosition);
                 pp.Height = 120 + 6;
                 pp.Width = CalcProportionalWidth(image, pp.Height) + 6;
@@ -178,8 +155,6 @@ namespace FlowerSlides
                     yPosition += 120 + 10;
                 }
                 imageCount += 1;
-
-                Thumbnails.Add(pp);
             }
         }
 

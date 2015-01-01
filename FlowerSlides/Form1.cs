@@ -19,7 +19,7 @@ namespace FlowerSlides
     // - http://stackoverflow.com/questions/3270919/transition-of-images-in-windows-forms-picture-box
     public partial class Form1 : Form
     {
-        string _folder = @"C:\Users\hma\Pictures\Foredrag";
+        string _folder = @"C:\Users\hma\Pictures\Blomster";
         bool _slideshowStarted = false;
         FormWindowState _originalWindowState = FormWindowState.Maximized;
 
@@ -31,11 +31,12 @@ namespace FlowerSlides
         public Form1()
         {
             InitializeComponent();
-            Stopwatch sw = Stopwatch.StartNew();
-            //Utils.BuildThumbnails(_folder);
-            long t1 = sw.ElapsedMilliseconds;
-            var fileName = Path.Combine(Environment.GetFolderPath(
-                Environment.SpecialFolder.ApplicationData), "DateLinks.xml");
+            var settingsFile = Path.Combine(Environment.GetFolderPath(
+                Environment.SpecialFolder.ApplicationData), "FlowerSlides", "Settings.ini");
+
+            // TODO: Read/update last used folder
+            // Ask user which folder to use if it does not exist
+            // Add option to start program with a folder as input
 
             this.BackColor = Globals.DarkGray;
             this.pictureTitle.Visible = false;
@@ -69,10 +70,9 @@ namespace FlowerSlides
         {
             StartFullscreen();
             thumbsPanel1.Hide();
-            slidePanel1.Show();
             slidePanel1.CurrentFile = filename;
             slidePanel1.Initialize();
-            //blendPanel1.Show();
+            slidePanel1.Show();
             _slideshow = new SlideshowRunner(filename, slidePanel1);
         }
 
