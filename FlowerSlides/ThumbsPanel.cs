@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,8 +15,10 @@ namespace FlowerSlides
     public class ThumbsPanel : Panel
     {
         public event EventHandler<ImageClickedEventArgs> ImageClicked;
+        public event EventHandler BackClicked;
 
         FlowLayoutPanel flp;
+        PictureBox back;
         private Label FolderLabel;
         private Label DescriptionLabel;
         private string _currentFolder;
@@ -30,6 +33,27 @@ namespace FlowerSlides
             flp.Size = new Size(this.Width - 100, this.Height - 190);
             flp.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
             flp.AutoScroll = true;
+            back = new PictureBox();
+            back.Size = new Size(40, 40);
+            back.SizeMode = PictureBoxSizeMode.Zoom;
+            back.Location = new Point(50, 63);
+            back.Cursor = Cursors.Hand;
+            back.Click += back_Click;
+            back.Image = LoadEmbeddedImage("FlowerSlides.back.png");
+            back.Parent = this;
+        }
+
+        void back_Click(object sender, EventArgs e)
+        {
+            if (BackClicked != null)
+                BackClicked(sender, EventArgs.Empty);
+        }
+
+        private Image LoadEmbeddedImage(string resourceName)
+        {
+            var _assembly = Assembly.GetExecutingAssembly();
+            var _imageStream = _assembly.GetManifestResourceStream(resourceName);
+            return new Bitmap(_imageStream);
         }
 
         public void Initialize()
@@ -49,14 +73,9 @@ namespace FlowerSlides
             labelPanel.Width = this.Width;
             labelPanel.Height = 120;
 
-            FolderLabel = new Label
-            {
-                AutoSize = true,
-                Text = GetFolderName(CurrentFolder),
-                Location = new Point(105, 48),
-                Font = new Font("Segoe UI Light", 30F, FontStyle.Regular, GraphicsUnit.Point),
-                ForeColor = Globals.LightText
-            };
+            FolderLabel = LabelUtil.CreateTitle(GetFolderName(CurrentFolder));
+            FolderLabel.Location = new Point(105, 48);
+
             labelPanel.Controls.Add(FolderLabel);
 
             int offsetX = FolderLabel.Width + 122;
@@ -83,7 +102,6 @@ namespace FlowerSlides
         {
             if (string.IsNullOrEmpty(path))
                 return "";
-            path = Path.GetDirectoryName(path);
             var tokens = path.Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
             return tokens[tokens.Length - 1];
         }
@@ -96,10 +114,6 @@ namespace FlowerSlides
             }
         }
 
-        /// <summary>
-        /// Warning: This method is very memory consuming
-        /// </summary>
-        /// <param name="p"></param>
         private void LoadImageScroller(Panel p)
         {
             if (_currentFolder == null)

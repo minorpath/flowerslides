@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.pictureTitle = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.thumbsPanel1 = new FlowerSlides.ThumbsPanel();
@@ -97,6 +98,7 @@
             this.Controls.Add(this.blendPanel1);
             this.Controls.Add(this.slidePanel1);
             this.Controls.Add(this.pictureTitle);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.Name = "Form1";
             this.Text = "Form1";

@@ -32,17 +32,7 @@ namespace FlowerSlides
         public SlidePanel()
         {
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
-            //BackColor = Globals.DarkGray;
-            //ForeColor = Globals.LightGray;
-            this.BackColor = Color.Yellow;
             InitializeComponent();
-            //PictureBox pict = new PictureBox();
-            //pict.Size = new Size(100, 100);
-            //pict.Location = new Point(100, 100);
-            //pict.Image = Image.FromFile(@"C:\Users\hma\Pictures\Blomster\Penstemon 'Raven'.jpg");
-            //pict.SizeMode = PictureBoxSizeMode.Zoom;
-            //pict.BackColor = Color.Pink;
-            //pict.Parent = this;
         }
 
         private void InitializeComponent()
@@ -52,7 +42,6 @@ namespace FlowerSlides
             pb.Size = new Size(10,10);
             pb.SizeMode = PictureBoxSizeMode.Zoom;
             pb.Location = new Point(10,10);
-            pb.Click += new EventHandler(pb_Click);
 
             labelPanel = new Panel();
             labelPanel.Parent = this;
@@ -82,8 +71,8 @@ namespace FlowerSlides
             {
                 AutoSize = true,
                 Text = FormattingTools.GetLatinName(CurrentFile),
-                Location = new Point(105, 48),
-                Font = new Font("Segoe UI Light", 30F, FontStyle.Italic, GraphicsUnit.Point),
+                Location = new Point(105, 18),
+                Font = new Font("Segoe UI Light", 30F, FontStyle.Italic | FontStyle.Bold, GraphicsUnit.Point),
                 ForeColor = Globals.LightText
             };
             labelPanel.Controls.Add(LatinNameLabel);
@@ -92,8 +81,8 @@ namespace FlowerSlides
             {
                 AutoSize = true,
                 Text = FormattingTools.GetHybridName(CurrentFile),
-                Location = new Point(105, 48),
-                Font = new Font("Segoe UI Light", 30F, FontStyle.Regular, GraphicsUnit.Point),
+                Location = new Point(105, 18),
+                Font = new Font("Segoe UI Light", 30F, FontStyle.Regular | FontStyle.Bold, GraphicsUnit.Point),
                 ForeColor = Globals.LightText
             };
             labelPanel.Controls.Add(HybridNameLabel);
@@ -142,12 +131,6 @@ namespace FlowerSlides
                 //make a new Bitmap object the owner of the MemoryStream
                 return new Bitmap(memoryStream);
             }
-        }
-        void pb_Click(object sender, EventArgs e)
-        {
-            var filename = ((PictureBox)sender).Image.Tag.ToString();
-            //if (ImageClicked != null)
-            //    ImageClicked(sender, new ImageClickedEventArgs(filename));
         }
 
     }

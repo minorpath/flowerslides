@@ -19,13 +19,11 @@ namespace FlowerSlides
     // - http://stackoverflow.com/questions/3270919/transition-of-images-in-windows-forms-picture-box
     public partial class Form1 : Form
     {
-        string _folder = @"C:\Users\hma\Pictures\Blomster";
         bool _slideshowStarted = false;
         FormWindowState _originalWindowState = FormWindowState.Maximized;
-
+        SelectFolderPanel selectFolderPanel;
         public int count = 0;
         public Bitmap[] pictures;
-
         SlideshowRunner _slideshow;
         
         public Form1()
@@ -45,9 +43,10 @@ namespace FlowerSlides
 
             thumbsPanel1.BackColor = Globals.DarkGray;
             thumbsPanel1.ImageClicked += thumbsPanel1_ImageClicked;
-            thumbsPanel1.CurrentFolder = _folder;
+            thumbsPanel1.BackClicked += thumbsPanel1_BackClicked;
             thumbsPanel1.Location = new Point(0,0);
             thumbsPanel1.Size = Size;
+            thumbsPanel1.Hide();
 
             blendPanel1.Location = new Point(0, 0);
             blendPanel1.Size = Size;
@@ -57,8 +56,38 @@ namespace FlowerSlides
             slidePanel1.Size = Size;
             slidePanel1.Hide();
 
-            thumbsPanel1.Initialize();
+            selectFolderPanel = new SelectFolderPanel(settingsFile);
+            selectFolderPanel.Location = new Point(0, 0);
+            selectFolderPanel.Size = Size;
+            selectFolderPanel.FolderSelected += selectFolderPanel_FolderSelected;
+            this.Controls.Add(selectFolderPanel);
 
+        }
+
+        void thumbsPanel1_BackClicked(object sender, EventArgs e)
+        {
+            selectFolderPanel.Show();
+            thumbsPanel1.Hide();
+        }
+
+        void selectFolderPanel_FolderSelected(object sender, FolderSelectedEventArgs e)
+        {
+            Panel tempOverlay = new Panel();
+            tempOverlay.Width = selectFolderPanel.Width;
+            tempOverlay.Height = selectFolderPanel.Height;
+            tempOverlay.Location = new Point(0, 0);
+            Label pleaseWait = LabelUtil.CreateSubTitle("Vennligst vent mens vi klargjør noen ting for deg...");
+            pleaseWait.Location = new Point(112, 160);
+            tempOverlay.Controls.Add(pleaseWait);
+            selectFolderPanel.Controls.Add(tempOverlay);
+            tempOverlay.BringToFront();
+            selectFolderPanel.Refresh();
+
+            thumbsPanel1.CurrentFolder = e.Path;
+            thumbsPanel1.Initialize();
+            thumbsPanel1.Show();
+            selectFolderPanel.Hide();
+            selectFolderPanel.Controls.Remove(tempOverlay);
         }
 
         void thumbsPanel1_ImageClicked(object sender, ImageClickedEventArgs e)
@@ -95,8 +124,11 @@ namespace FlowerSlides
         private void StartFullscreen()
         {
             _originalWindowState = WindowState;
+            this.SuspendLayout();
+            WindowState = FormWindowState.Normal;
             FormBorderStyle = FormBorderStyle.None;
             WindowState = FormWindowState.Maximized;
+            this.ResumeLayout();
         }
 
         private void ExitFullscreen()

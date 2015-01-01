@@ -11,7 +11,6 @@ namespace FlowerSlides
         string SlideshowFolder;
         string[] _files;
         SlidePanel slidePanel;
-        Bitmap bm1;
         int currentIndex = 0;
 
         public SlideshowRunner(string initialFilename, SlidePanel panel)
