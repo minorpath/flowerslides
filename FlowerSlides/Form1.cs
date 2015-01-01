@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -18,10 +19,8 @@ namespace FlowerSlides
     // - http://stackoverflow.com/questions/3270919/transition-of-images-in-windows-forms-picture-box
     public partial class Form1 : Form
     {
-        string _folder = @"C:\Users\hma\Pictures";
+        string _folder = @"C:\Users\hma\Pictures\Foredrag";
         bool _slideshowStarted = false;
-        List<string> files;
-        int currentIndex = 0;
         FormWindowState _originalWindowState = FormWindowState.Maximized;
 
         public int count = 0;
@@ -32,6 +31,11 @@ namespace FlowerSlides
         public Form1()
         {
             InitializeComponent();
+            Stopwatch sw = Stopwatch.StartNew();
+            //Utils.BuildThumbnails(_folder);
+            long t1 = sw.ElapsedMilliseconds;
+            var fileName = Path.Combine(Environment.GetFolderPath(
+                Environment.SpecialFolder.ApplicationData), "DateLinks.xml");
 
             this.BackColor = Globals.DarkGray;
             this.pictureTitle.Visible = false;
@@ -40,13 +44,20 @@ namespace FlowerSlides
 
             thumbsPanel1.BackColor = Globals.DarkGray;
             thumbsPanel1.ImageClicked += thumbsPanel1_ImageClicked;
-            thumbsPanel1.CurrentFolder = @"C:\Users\hma\Pictures\Blomster";
+            thumbsPanel1.CurrentFolder = _folder;
             thumbsPanel1.Location = new Point(0,0);
             thumbsPanel1.Size = Size;
 
             blendPanel1.Location = new Point(0, 0);
             blendPanel1.Size = Size;
             blendPanel1.Hide();
+
+            slidePanel1.Location = new Point(0, 0);
+            slidePanel1.Size = Size;
+            slidePanel1.Hide();
+
+            thumbsPanel1.Initialize();
+
         }
 
         void thumbsPanel1_ImageClicked(object sender, ImageClickedEventArgs e)
@@ -58,8 +69,11 @@ namespace FlowerSlides
         {
             StartFullscreen();
             thumbsPanel1.Hide();
-            blendPanel1.Show();
-            _slideshow = new SlideshowRunner(filename, blendPanel1);
+            slidePanel1.Show();
+            slidePanel1.CurrentFile = filename;
+            slidePanel1.Initialize();
+            //blendPanel1.Show();
+            _slideshow = new SlideshowRunner(filename, slidePanel1);
         }
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
@@ -68,19 +82,14 @@ namespace FlowerSlides
                 EndSlideshow();
         }
 
-        private void StartSlideshow()
-        {
-            StartFullscreen();
-            ShowPicture(files[0]);
-        }
-
         private void EndSlideshow()
         {
             this.pictureTitle.Visible = false;
             ExitFullscreen();
             thumbsPanel1.Show();
-            blendPanel1.Hide();
-            _slideshow.Stop();
+            slidePanel1.Hide();
+            //blendPanel1.Hide();
+            //_slideshow.Stop();
         }
 
         private void StartFullscreen()
@@ -102,13 +111,6 @@ namespace FlowerSlides
             {
                 if (_slideshowStarted)
                     return;
-
-                files = Directory
-                    .EnumerateFiles(_folder) //<--- .NET 4.5
-                    .Where(file => file.ToLower().EndsWith("jpg") || file.ToLower().EndsWith("jpeg"))
-                    .ToList();
-
-                StartSlideshow();
             }
             if (e.KeyCode == Keys.Right)
             {

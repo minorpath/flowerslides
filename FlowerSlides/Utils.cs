@@ -1,5 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.IO;
+using System;
+using ImageResizer;
+using System.Diagnostics;
 
 namespace FlowerSlides
 {
@@ -17,12 +21,78 @@ namespace FlowerSlides
                 {
                     if (f.Extension.ToString().ToLower() == validExtensions[i].ToLower())
                     {
-                        validFiles.Add(f.FullName.ToLowerInvariant());
+                        validFiles.Add(f.FullName);
                     }
                 }
             }
             validFiles.Sort();
             return validFiles.ToArray();
+        }
+
+        /// <summary>
+        /// Gets the path to a folder where the thumbnails for images
+        /// found in the provided 'folder' parameter 
+        /// </summary>
+        /// <param name="folder">The path to the folder where images are stored</param>
+        /// <returns></returns>
+        internal static string GetThumbnailFolder(string path)
+        {
+            var thumbsFolder = Path.Combine(Environment.GetFolderPath(
+                Environment.SpecialFolder.ApplicationData), "FlowerSlides", "Thumbs");
+            var folder = Path.GetDirectoryName(path);
+            var dirName = StripIllegalFilenameChars(folder);
+            thumbsFolder = Path.Combine(thumbsFolder, dirName);
+            return thumbsFolder;
+        }
+
+        internal static void BuildThumbnails(string _folder)
+        {
+            var files = Utils.GetValidFilesSorted(_folder);
+            foreach (var file in files)
+            {
+                BuildThumbnail(file);
+            }
+        }
+
+        internal static string BuildThumbnail(string filepath)
+        {
+            var thumbsFolder = GetThumbnailFolder(filepath);
+            if (!Directory.Exists(thumbsFolder))
+                Directory.CreateDirectory(thumbsFolder);
+
+            var outfile = Path.GetFileName(filepath);
+            outfile = Path.Combine(thumbsFolder, outfile);
+            if (ShouldGenerateNewThumbnail(outfile))
+            {
+                ImageBuilder.Current.Build(filepath, outfile,
+                    new ResizeSettings("height=120&format=jpg"));
+            }
+            return outfile;
+        }
+
+        private static bool ShouldGenerateNewThumbnail(string outfile)
+        {
+            if (!File.Exists(outfile))
+                return true;
+
+            return false;
+        }
+
+        public static string StripIllegalFilenameChars(string path)
+        {
+            return path.Replace(":", "").Replace("\\", "");
+        }
+
+        public static string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return System.Convert.ToBase64String(plainTextBytes);
+        }
+
+        public static string Base64Decode(string base64EncodedData)
+        {
+            var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
+            return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
         }
     }
 }

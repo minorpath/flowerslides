@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -16,6 +17,7 @@ namespace FlowerSlides
 
         private Label FolderLabel;
         private Label DescriptionLabel;
+        private List<Panel> Thumbnails;
 
         private string _currentFolder;
         public ThumbsPanel()
@@ -23,6 +25,41 @@ namespace FlowerSlides
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
             BackColor = Globals.DarkGray;
             ForeColor = Globals.LightGray;
+            Thumbnails = new List<Panel>();
+            Resize += ThumbsPanel_Resize;
+        }
+
+        void ThumbsPanel_Resize(object sender, EventArgs e)
+        {
+            RepositionThumbnails();
+        }
+
+        private void RepositionThumbnails()
+        {
+            int xOffset = 50;
+            int xPosition = xOffset;
+            int yPosition = 140;
+            foreach(Panel pp in Thumbnails)
+            {
+                pp.Location = new Point(xPosition + 10, yPosition);
+
+                // set position of next PictureBox 10 pixels to the right of the previous
+                xPosition += pp.Width + 4;
+
+                // Wrap thumbnails
+                if (xPosition > (this.Width - (xOffset + pp.Width)))
+                {
+                    xPosition = xOffset;
+                    yPosition += 120 + 10;
+                }
+            }
+        }
+
+        public void Initialize()
+        {
+            InitializeLabels();
+            Utils.BuildThumbnails(_currentFolder);
+            LoadImageScroller(this);
         }
 
         private void InitializeLabels()
@@ -38,7 +75,7 @@ namespace FlowerSlides
             FolderLabel = new Label
             {
                 AutoSize = true,
-                Text = GetFolder(CurrentFolder),
+                Text = GetFolderName(CurrentFolder),
                 Location = new Point(105, 48),
                 Font = new Font("Segoe UI Light", 30F, FontStyle.Regular, GraphicsUnit.Point),
                 ForeColor = Globals.LightText
@@ -61,16 +98,16 @@ namespace FlowerSlides
 
         private string GetDescription(string folder)
         {
-            var files = GetFileInfos(folder);
+            var files = new DirectoryInfo(folder).GetFiles();
             return "Bildebibliotek " + files.Length + "  filer";
         }
 
-        private string GetFolder(string folder)
+        private string GetFolderName(string path)
         {
-            if (string.IsNullOrEmpty(folder))
+            if (string.IsNullOrEmpty(path))
                 return "";
-            folder = Path.GetDirectoryName(folder);
-            var tokens = folder.Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
+            path = Path.GetDirectoryName(path);
+            var tokens = path.Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
             return tokens[tokens.Length - 1];
         }
 
@@ -79,15 +116,7 @@ namespace FlowerSlides
             get { return _currentFolder; }
             set { 
                 _currentFolder = value;
-                InitializeLabels();
-                LoadImageScroller(this);
             }
-        }
-
-        private FileInfo[] GetFileInfos(string folder)
-        {
-            DirectoryInfo info = new DirectoryInfo(folder);
-            return info.GetFiles();
         }
 
         /// <summary>
@@ -107,7 +136,8 @@ namespace FlowerSlides
             string[] files = Utils.GetValidFilesSorted(_currentFolder);
             foreach (string filename in files)
             {
-                var image = Image.FromFile(filename);
+                var thumbFile = Utils.BuildThumbnail(filename);
+                var image = Image.FromFile(thumbFile);
 
                 Panel pp = new Panel();
                 pp.BackColor = this.BackColor;
@@ -142,12 +172,14 @@ namespace FlowerSlides
                 xPosition += pb.Width + 10;
 
                 // Wrap thumbnails
-                if (xPosition > (this.Width - xOffset))
+                if (xPosition > (this.Width - (xOffset+pp.Width)))
                 {
                     xPosition = xOffset;
                     yPosition += 120 + 10;
                 }
                 imageCount += 1;
+
+                Thumbnails.Add(pp);
             }
         }
 
