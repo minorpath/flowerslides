@@ -66,6 +66,7 @@ namespace FlowerSlides
 
         void thumbsPanel1_BackClicked(object sender, EventArgs e)
         {
+            selectFolderPanel.Initialize();
             selectFolderPanel.Show();
             thumbsPanel1.Hide();
         }

@@ -24,7 +24,6 @@ namespace FlowerSlides
 
         private void InitializeComponent()
         {
-            FlowLayoutPanel flp = new FlowLayoutPanel();
 
             Label title = LabelUtil.CreateTitle("FlowerSlides");
             title.Location = new Point(105, 48);
@@ -120,5 +119,10 @@ namespace FlowerSlides
         }
 
 
+
+        internal void Initialize()
+        {
+            InitializeComponent();
+        }
     }
 }
