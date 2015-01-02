@@ -39,6 +39,7 @@
   <ItemGroup>
     <Reference Include="ImageResizer">
       <HintPath>..\packages\ImageResizer.3.4.3\lib\ImageResizer.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -107,6 +108,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\packages\ImageResizer.3.4.3\lib\ImageResizer.dll">
+      <Link>ImageResizer.dll</Link>
+    </EmbeddedResource>
     <Content Include="flower_12-512.ico" />
     <EmbeddedResource Include="back.png" />
   </ItemGroup>
