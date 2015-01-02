@@ -109,7 +109,17 @@ namespace FlowerSlides
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Escape)
-                EndSlideshow();
+            {
+                if (slidePanel1.Visible)
+                {
+                    EndSlideshow();
+                }
+                else
+                {
+                    thumbsPanel1.Hide();
+                    selectFolderPanel.Show();
+                }
+            }
         }
 
         private void EndSlideshow()
