@@ -112,6 +112,9 @@ namespace FlowerSlides
             }
             else
             {
+                var dir = Path.GetDirectoryName(SettingsFilePath);
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
                 File.WriteAllText(SettingsFilePath, path);
             }
         }
