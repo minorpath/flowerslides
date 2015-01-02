@@ -24,6 +24,8 @@ namespace FlowerSlides
 
         private void InitializeComponent()
         {
+            while (Controls.Count > 0)
+                Controls[0].Dispose();
 
             Label title = LabelUtil.CreateTitle("FlowerSlides");
             title.Location = new Point(105, 48);

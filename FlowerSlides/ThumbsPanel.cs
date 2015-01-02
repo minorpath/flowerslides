@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -27,12 +28,20 @@ namespace FlowerSlides
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
             BackColor = Globals.DarkGray;
             ForeColor = Globals.LightGray;
+            InitializeComponent();
+        }
+
+        private void InitializeComponent()
+        {
+            ReleaseResources();
+            
             flp = new FlowLayoutPanel();
             flp.Parent = this;
             flp.Location = new Point(50, 140);
             flp.Size = new Size(this.Width - 100, this.Height - 190);
             flp.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
             flp.AutoScroll = true;
+
             back = new PictureBox();
             back.Size = new Size(40, 40);
             back.SizeMode = PictureBoxSizeMode.Zoom;
@@ -41,12 +50,33 @@ namespace FlowerSlides
             back.Click += back_Click;
             back.Image = LoadEmbeddedImage("FlowerSlides.back.png");
             back.Parent = this;
+
+            InitializeLabels();
         }
 
-        void back_Click(object sender, EventArgs e)
+        private void ReleaseResources()
         {
-            if (BackClicked != null)
-                BackClicked(sender, EventArgs.Empty);
+            if (back != null && back.Image != null)
+                back.Image.Dispose();
+
+            if (flp != null)
+            {
+                foreach (Control ctrl in flp.Controls) 
+                {
+                    foreach (Control x in ctrl.Controls)
+                    {
+                        if (x is PictureBox)
+                        {
+                            var pb = x as PictureBox;
+                            if (pb.Image != null)
+                                pb.Image.Dispose();
+                        }
+                    }
+                }
+
+            }
+            while (Controls.Count > 0)
+                Controls[0].Dispose();
         }
 
         private Image LoadEmbeddedImage(string resourceName)
@@ -58,7 +88,7 @@ namespace FlowerSlides
 
         public void Initialize()
         {
-            InitializeLabels();
+            InitializeComponent();
             Utils.BuildThumbnails(_currentFolder);
             LoadImageScroller(this);
         }
@@ -128,15 +158,13 @@ namespace FlowerSlides
             foreach (string filename in files)
             {
                 var thumbFile = Utils.BuildThumbnail(filename);
-                var image = Image.FromFile(thumbFile);
-
+                var image = Utils.LoadBitmap(thumbFile);
                 Panel pp = new Panel();
                 pp.BackColor = this.BackColor;
                 pp.Parent = flp;
                 pp.Location = new Point(xPosition + 10, yPosition);
                 pp.Height = 120 + 6;
                 pp.Width = CalcProportionalWidth(image, pp.Height) + 6;
-
                 PictureBox pb = new PictureBox();
                 pb.Name = "ImagePB" + imageCount;
                 pb.Cursor = Cursors.Hand;
@@ -193,6 +221,12 @@ namespace FlowerSlides
             var filename = ((PictureBox)sender).Image.Tag.ToString();
             if (ImageClicked != null)
                 ImageClicked(sender, new ImageClickedEventArgs(filename));
+        }
+
+        void back_Click(object sender, EventArgs e)
+        {
+            if (BackClicked != null)
+                BackClicked(sender, EventArgs.Empty);
         }
 
     }

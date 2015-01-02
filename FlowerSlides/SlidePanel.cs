@@ -37,6 +37,11 @@ namespace FlowerSlides
 
         private void InitializeComponent()
         {
+            if (pb != null && pb.Image != null)
+                pb.Image.Dispose();
+            while (Controls.Count > 0)
+                Controls[0].Dispose();
+
             pb = new PictureBox();
             pb.Parent = this;
             pb.Size = new Size(10,10);
@@ -65,7 +70,9 @@ namespace FlowerSlides
                 return;
             
             labelPanel.SuspendLayout();
-            labelPanel.Controls.Clear();
+
+            while (labelPanel.Controls.Count > 0)
+                labelPanel.Controls[0].Dispose();
             
             LatinNameLabel = new Label
             {
@@ -111,26 +118,12 @@ namespace FlowerSlides
             //Backup old image in pictureBox
             var oldImage = pb.Image;
 
-            pb.Image = LoadBitmap(_currentFile);
+            pb.Image = Utils.LoadBitmap(_currentFile);
             
             //Release resources from old image
             if (oldImage != null)
                 ((IDisposable)oldImage).Dispose(); 
 
-        }
-
-        public static Bitmap LoadBitmap(string path)
-        {
-            //Open file in read only mode
-            using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
-            //Get a binary reader for the file stream
-            using (BinaryReader reader = new BinaryReader(stream))
-            {
-                //copy the content of the file into a memory stream
-                var memoryStream = new MemoryStream(reader.ReadBytes((int)stream.Length));
-                //make a new Bitmap object the owner of the MemoryStream
-                return new Bitmap(memoryStream);
-            }
         }
 
     }
