@@ -52,14 +52,14 @@ namespace FlowerSlides
             labelPanel.Parent = this;
             labelPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             labelPanel.Width = this.Width;
-            labelPanel.Height = 120;
+            labelPanel.Height = 60;
         }
 
         public void Initialize()
         {
             pb.Size = new Size(this.Width - 100, this.Height - 120);
             int x = (this.Width - pb.Width) / 2;
-            pb.Location = new Point(x, 120);
+            pb.Location = new Point(x, 60);
             UpdateLabels();
             LoadImage(this);
         }
@@ -78,7 +78,7 @@ namespace FlowerSlides
             {
                 AutoSize = true,
                 Text = FormattingTools.GetLatinName(CurrentFile),
-                Location = new Point(105, 18),
+                Location = new Point(105, -10),
                 Font = new Font("Segoe UI Light", 30F, FontStyle.Italic | FontStyle.Bold, GraphicsUnit.Point),
                 ForeColor = Globals.LightText
             };
@@ -88,7 +88,7 @@ namespace FlowerSlides
             {
                 AutoSize = true,
                 Text = FormattingTools.GetHybridName(CurrentFile),
-                Location = new Point(105, 18),
+                Location = new Point(105, -10),
                 Font = new Font("Segoe UI Light", 30F, FontStyle.Regular | FontStyle.Bold, GraphicsUnit.Point),
                 ForeColor = Globals.LightText
             };
