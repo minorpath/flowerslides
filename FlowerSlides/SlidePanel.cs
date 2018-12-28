@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using FlowerSlides.Extensions;
 
 namespace FlowerSlides
 {
@@ -119,7 +120,8 @@ namespace FlowerSlides
             var oldImage = pb.Image;
 
             pb.Image = Utils.LoadBitmap(_currentFile);
-            
+            pb.Image.ExifRotate();
+
             //Release resources from old image
             if (oldImage != null)
                 ((IDisposable)oldImage).Dispose(); 

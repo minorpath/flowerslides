@@ -55,6 +55,7 @@
     <Compile Include="BlendPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Extensions\ImageExtensions.cs" />
     <Compile Include="FolderSelectedEventArgs.cs" />
     <Compile Include="LabelUtil.cs" />
     <Compile Include="SelectFolderPanel.cs">
