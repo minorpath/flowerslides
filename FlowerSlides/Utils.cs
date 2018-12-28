@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using System;
-using ImageResizer;
-using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using ImageResizer;
 
 namespace FlowerSlides
 {
@@ -66,7 +64,7 @@ namespace FlowerSlides
             if (ShouldGenerateNewThumbnail(outfile))
             {
                 ImageBuilder.Current.Build(filepath, outfile,
-                    new ResizeSettings("height=120&format=jpg"));
+                    new ResizeSettings("height=120&format=jpg&autorotate=true"));
             }
             return outfile;
         }
